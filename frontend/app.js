@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5000';
+const BASE_URL = 'https://link-analytics-platform-production.up.railway.app';
 
 // Global state
 let token = localStorage.getItem('jwt_token');
