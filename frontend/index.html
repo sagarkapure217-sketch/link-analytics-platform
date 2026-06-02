@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link Analytics Testing Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div id="app">
+    <!-- 1. Authentication View -->
+    <div id="auth-view" class="view">
+      <div class="auth-container">
+        <!-- Login Form Card -->
+        <div id="login-card" class="auth-card">
+          <h2>Login</h2>
+          <p class="auth-subtitle">Access your Link Analytics Dashboard</p>
+          <div class="alert error-alert hidden" id="login-error"></div>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" required placeholder="name@domain.com">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn primary-btn btn-block">Sign In</button>
+          </form>
+          <div class="auth-switch">
+            Don't have an account? <a href="#" id="to-register-btn">Register here</a>
+          </div>
+        </div>
+
+        <!-- Register Form Card -->
+        <div id="register-card" class="auth-card hidden">
+          <h2>Register</h2>
+          <p class="auth-subtitle">Create a new account</p>
+          <div class="alert error-alert hidden" id="register-error"></div>
+          <div class="alert success-alert hidden" id="register-success"></div>
+          <form id="register-form">
+            <div class="form-group">
+              <label for="register-email">Email Address</label>
+              <input type="email" id="register-email" required placeholder="name@domain.com">
+            </div>
+            <div class="form-group">
+              <label for="register-password">Password</label>
+              <input type="password" id="register-password" required placeholder="Min. 6 characters">
+            </div>
+            <button type="submit" class="btn primary-btn btn-block">Sign Up</button>
+          </form>
+          <div class="auth-switch">
+            Already have an account? <a href="#" id="to-login-btn">Login here</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Dashboard View -->
+    <div id="dashboard-view" class="view hidden">
+      <!-- Navbar -->
+      <header class="app-header">
+        <div class="header-logo">
+          <h1>🔗 Link Analytics Platform</h1>
+        </div>
+        <div class="header-user">
+          <span id="user-display-email">user@domain.com</span>
+          <button id="logout-btn" class="btn outline-btn">Sign Out</button>
+        </div>
+      </header>
+
+      <!-- Main Layout -->
+      <main class="dashboard-container">
+        <!-- Create Short URL Section -->
+        <section class="card shorten-card">
+          <h3>Create Short Link</h3>
+          <div class="alert error-alert hidden" id="create-error"></div>
+          <div class="alert success-alert hidden" id="create-success"></div>
+          <form id="create-link-form" class="shorten-form">
+            <div style="flex: 2; display: flex; flex-direction: column; gap: 6px;">
+              <label for="original-url-input" style="font-size: 13px; font-weight: 500; color: var(--text-secondary);">Original URL</label>
+              <input type="url" id="original-url-input" required placeholder="Paste a long URL here (e.g., https://leetcode.com/problems/two-sum)">
+            </div>
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+              <label for="custom-alias-input" style="font-size: 13px; font-weight: 500; color: var(--text-secondary);">Custom Alias (Optional)</label>
+              <input type="text" id="custom-alias-input" placeholder="e.g. leetcode">
+            </div>
+            <button type="submit" class="btn primary-btn" style="align-self: flex-end; height: 48px; margin-bottom: 2px;">Shorten</button>
+          </form>
+        </section>
+
+        <!-- Links List Section -->
+        <section class="card list-card">
+          <div class="list-header">
+            <h3>My Active Links</h3>
+            <button id="refresh-links-btn" class="btn icon-btn">🔄 Refresh</button>
+          </div>
+          
+          <div class="table-container">
+            <table id="links-table">
+              <thead>
+                <tr>
+                  <th>Original URL</th>
+                  <th>Short Code</th>
+                  <th>Created At</th>
+                  <th class="actions-column">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="links-table-body">
+                <!-- Dynamic rows go here -->
+              </tbody>
+            </table>
+          </div>
+          
+          <div id="no-links-msg" class="empty-state hidden">
+            <div class="empty-icon">📁</div>
+            <p>You haven't shortened any links yet. Enter a URL above to get started!</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- 3. Analytics Modal -->
+    <div id="analytics-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h2 id="modal-title">Link Analytics</h2>
+            <p id="modal-subtitle" class="modal-sub">Loading stats...</p>
+          </div>
+          <button id="modal-close-btn" class="close-btn">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+          <!-- Big Numbers Metrics -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Total Clicks</span>
+              <h3 class="metric-val" id="metric-total-clicks">-</h3>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Unique Visitors</span>
+              <h3 class="metric-val" id="metric-unique-visitors">-</h3>
+            </div>
+          </div>
+
+          <!-- Breakdown Tables/Lists -->
+          <div class="breakdown-grid">
+            <!-- Top Countries -->
+            <div class="breakdown-section">
+              <h4>🌍 Top Countries (Max 5)</h4>
+              <div class="breakdown-list" id="country-stats-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Top Devices -->
+            <div class="breakdown-section">
+              <h4>📱 Top Devices</h4>
+              <div class="breakdown-list" id="device-stats-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
