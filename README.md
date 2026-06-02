@@ -373,24 +373,7 @@ Open `frontend/index.html` directly in a browser, or serve it with:
 npx http-server ./frontend -p 3000
 ```
 
-### Environment Variables
 
-```env
-PORT=5000
-
-DB_HOST=localhost
-DB_PORT=5432
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=linkanalytics
-
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-JWT_SECRET=change-this-in-production
-```
-
----
 
 ## Docker Setup
 
